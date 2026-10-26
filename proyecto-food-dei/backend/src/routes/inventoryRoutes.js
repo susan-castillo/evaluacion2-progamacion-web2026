@@ -1,6 +1,6 @@
 const express = require('express');
 const router =  express.Router();
-const {obtenerMenu, obtenerReserva} = require("../controllers/reservaController");
+const {obtenerMenu, obtenerReserva} = require("../controllers/inventoryController");
 
 // Definimos nuestras rutas
 

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Container, Spinner, UncontrolledAlert} from "reactstrap";
 import ReservaInfo from "../components/ReservaInfo.jsx";
-import {getReserva} from "../../api/reservaService.js";
+import {getReserva} from "../../api/inventoryService.js";
 
 function LuckyNumberScreen(){
     //Declaración de variables de estado para el mensaje de error y estado de carga

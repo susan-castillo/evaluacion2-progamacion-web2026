@@ -1,0 +1,1 @@
+const API_BASE_JUEGO = "http://localhost:5000/api/juego";

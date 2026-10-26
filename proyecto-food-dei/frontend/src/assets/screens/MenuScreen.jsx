@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react'
 import {Container, Navbar, NavbarBrand, Spinner, UncontrolledAlert} from "reactstrap";
 import ReservaInfo from "../components/ReservaInfo.jsx";
-import {getReserva} from "../../api/reservaService.js";
+import {getReserva} from "../../api/inventoryService.js";
 
 function MenuScreen() {
     //Declaración de variables de estado para almacenar la reserva, mensaje de error y estado de carga

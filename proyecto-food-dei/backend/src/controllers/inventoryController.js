@@ -1,5 +1,5 @@
 //Importacion de modulos necesarios
-const { inventario, reserva, calcularTotal} = require('../utils/data');
+const { inventario, reserva, calcularTotal} = require('../utils/dataInventory');
 
 //----- ENDPOINTS
 //Endpoint 1: GET /api/menu
