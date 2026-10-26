@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Registrar prefijos de rutas
-app.use('/api/inventario', reservaRoutes)
+app.use('/api', reservaRoutes)
 //app.use('/api/juego', juegoRoutes)
 
 app.listen(PORT, () => {
