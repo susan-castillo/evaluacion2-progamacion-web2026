@@ -1,21 +1,38 @@
 import {useEffect, useState} from 'react'
-import {Container, Navbar, NavbarBrand, Spinner, UncontrolledAlert} from "reactstrap";
+import {Alert, Container, Navbar, NavbarBrand, Spinner} from "reactstrap";
 import ReservaInfo from "../components/ReservaInfo.jsx";
-import {getReserva} from "../../api/inventoryService.js";
+import MenuCatalog from "../components/MenuCatalog.jsx";
+import {agregarAReserva, getMenu, getReserva} from "../../api/inventoryService.js";
 
 function MenuScreen() {
-    //Declaración de variables de estado para almacenar la reserva, mensaje de error y estado de carga
-    const [reserva, setReserva] = useState({saldo: 0, total: 0, itemReservados: []});
+    //Declaración de variables de estado para almacenar el menú, la reserva, mensaje de error y estado de carga
+    const [menu, setMenu] = useState([]);
+    const [reserva, setReserva] = useState({saldo: 0, total: 0, itemsReservados: []});
     const [errorMsg, setErrorMsg] = useState('');
     const [cargando, setCargando] = useState(false);
 
-    // Funcion cargar datos nos sirve para poder hacer la peticion al backend y obtener la reserva
+    // Funcion cargar datos nos sirve para poder hacer la peticion al backend y obtener el menú y la reserva
     const cargarDatos = async () => {
+        setCargando(true);
         try {
-            const [dataReserva] = await Promise.all([getReserva()]);
+            const [dataMenu, dataReserva] = await Promise.all([getMenu(), getReserva()]);
+            setMenu(dataMenu);
             setReserva(dataReserva);
         } catch (err) {
             setErrorMsg('Error de conexión con el servidor backend');
+        } finally {
+            setCargando(false);
+        }
+    };
+
+    // Agrega un plato a la reserva y actualiza el estado con la respuesta del backend
+    const handleAgregar = async (alimentoId, cantidad) => {
+        try {
+            setErrorMsg('');
+            const reservaActualizada = await agregarAReserva(alimentoId, cantidad);
+            setReserva(reservaActualizada);
+        } catch (err) {
+            setErrorMsg(err.message);
         }
     };
 
@@ -47,15 +64,18 @@ function MenuScreen() {
             <ReservaInfo saldo={reserva.saldo} total={reserva.total}/>
 
             {/* Captura y despliegue de mensajes de error de la API */}
-            {errorMsg && (<UncontrolledAlert color="danger" className="mt-3">
+            <Alert color="danger" className="mt-3" isOpen={!!errorMsg} toggle={() => setErrorMsg('')}>
                 {errorMsg}
-            </UncontrolledAlert>)}
+            </Alert>
 
             {/* Si el estado de la variable cargando esta en true entonces mostrara lo siguiente */}
             {cargando && (<div className="text-center my-3">
                 <Spinner color="primary" size="sm"/>
                 <span className="ms-2 text-muted fw-bold">Cargando...</span>
             </div>)}
+
+            {/*Catálogo de platos disponibles*/}
+            <MenuCatalog menu={menu} onAgregar={handleAgregar}/>
         </Container>
     </>)
 }
