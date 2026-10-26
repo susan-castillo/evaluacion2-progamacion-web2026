@@ -1,116 +1,43 @@
-import {useEffect, useState} from 'react'
-import './App.css'
-import MenuScreen from "./assets/screens/MenuScreen.jsx";
-import LuckyNumberScreen from "./assets/screens/LuckyNumberScreen.jsx"
-import {Card, CardBody, Col, Container, Row, Button, CardImg} from "reactstrap";
-
+import React, {useState} from 'react';
+import {useNavigate, useLocation} from 'react-router-dom';
+import {Button, Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink} from 'reactstrap';
+import AppRouter from './assets/routes/AppRouter';
 
 function App() {
-    //Declaración de variables de estado
-    const [vistaActual, setVistaActual] = useState("home");
+    // Llamamos la función useNavigate para poder navegar entre las vistas (En esta pantalla nos sirve para evaluar si estamos en la raiz o no)
+    const location = useLocation();
+
+    // Estados para manejar el menu toggle
+    const [collapsed, setCollapsed] = useState(true);
+    const toggleNavbar = () => setCollapsed(!collapsed);
 
     return (
-        <>
-            <div>
-                {vistaActual !== 'home' && (
-                    <div
-                        className="p-3 bg-light border-bottom d-flex justify-content-between align-items-center bg-primary-subtle">
-                        <Button color="primary" size="sm" onClick={() => setVistaActual('home')}>
-                            Home
-                        </Button>
-                        <span className="fw-bold text-primary-emphasis">Evaluación II - Programación web</span>
+        <div>
+            {location.pathname !== '/' && (
+                <Navbar className={"p-3 mb-5"} color="primary-subtle" light>
+                    <div className={"d-flex align-items-center"}>
+                        <img src="/sitio-web.png" width={30} height={30} alt="Logo" className="me-2"/>
+                        <NavbarBrand href="/" className="me-auto text-primary-emphasis fw-bold">
+                            Evaluación II - Programación Web
+                        </NavbarBrand>
                     </div>
-                )}
+                    <NavbarToggler onClick={toggleNavbar} className="me-2"/>
+                    <Collapse isOpen={!collapsed} navbar>
+                        <Nav navbar className={"align-items-start"}>
+                            <NavItem>
+                                <NavLink className="text-primary-emphasis" href="/ejercicio1/">Ejercicio 1</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink className="text-primary-emphasis" href="/ejercicio2/">Ejercicio 2</NavLink>
+                            </NavItem>
+                        </Nav>
+                    </Collapse>
+                </Navbar>
 
-                {/* Pantalla principal */}
-                {vistaActual === 'home' && (
-                    <>
-                        {/* 1. Encabezado */}
-                        <div className={"bg-primary-subtle text-primary-emphasis p-3 text-center"}>
-                            <div className="d-flex justify-content-center align-items-center gap-3">
-                                <img
-                                    src="/sitio-web.png"
-                                    alt="Logo de la evaluación"
-                                    style={{width: "50px", height: "50px"}}
-                                />
-                                <h3 className="mb-0 fw-bold">Evaluación II - Programación Web</h3>
-                            </div>
-
-                            <p className={"text-muted mb-1 mt-2"}>
-                                Selecciona el ejercicio que deseas revisar:
-                            </p>
-                        </div>
-
-                        {/* 2. Tarjetas */}
-                        <Container className={"text-center"}>
-                            <Row className={"justify-content-center mt-5 gx-5"}>
-                                {/* Ejercicio 1 */}
-                                <Col xs={8} md={4} className={"mb-3"}>
-                                    <Card className={"h-100 shadow bg-body-tertiary rounded"}>
-                                        <CardImg
-                                            alt="Card image cap"
-                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUeJfR4WRzpSHZKoHoobOdiV725s9z0Q4GqE-qv_JCxABbrrbWdNuK5bg&s=10"
-                                            top
-                                            width="100%"
-                                        />
-                                        <CardBody className={"d-flex flex-column justify-content-between py-4"}>
-                                            <div>
-                                                <h4 className={"fw-bold mb-3"}>Ejercicio 1</h4>
-                                                <p className={"text-muted"}>
-                                                    Juego "Adivina el número". Haz click en el botón para acceder al
-                                                    ejercicio.
-                                                </p>
-                                            </div>
-                                            <Button
-                                                color={"danger"}
-                                                size={"md"}
-                                                className={"w-100 mt-2"}
-                                                onClick={() => setVistaActual('luckyNumberScreen')}
-                                            >
-                                                Ir al ejercicio 1
-                                            </Button>
-                                        </CardBody>
-                                    </Card>
-                                </Col>
-
-                                {/* Ejercicio 2 */}
-                                <Col xs={8} md={4} className={"mb-3"}>
-                                    <Card className={"h-100 shadow bg-body-tertiary rounded"}>
-                                        <CardImg
-                                            alt="Card image cap"
-                                            src="https://cdn.blog.paulinacocina.net/wp-content/uploads/2020/01/untitled-copy.jpg"
-                                            top
-                                            width="100%"
-                                        />
-                                        <CardBody className={"d-flex flex-column justify-content-between py-4"}>
-                                            <div>
-                                                <h4 className={"fw-bold mb-3"}>Ejercicio 2</h4>
-                                                <p className={"text-muted"}>
-                                                    Caso de negocio: Sistema de Reserva Food DEI SA. Haz click en el
-                                                    botón para ir al ejercicio.
-                                                </p>
-                                            </div>
-                                            <Button
-                                                color={"danger"}
-                                                size={"md"}
-                                                className={"w-100 mt-2"}
-                                                onClick={() => setVistaActual('menuScreen')}
-                                            >
-                                                Ir al ejercicio 2
-                                            </Button>
-                                        </CardBody>
-                                    </Card>
-                                </Col>
-                            </Row>
-                        </Container>
-                    </>
-                )}
-
-                {vistaActual === 'luckyNumberScreen' && <LuckyNumberScreen/>}
-                {vistaActual === 'menuScreen' && <MenuScreen/>}
-            </div>
-        </>
-    );
+            )}
+            {/* Render de las vistas según la URL */}
+            <AppRouter/>
+        </div>);
 }
 
-export default App
+export default App;
