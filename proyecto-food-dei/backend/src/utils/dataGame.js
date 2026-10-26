@@ -2,6 +2,7 @@
 let numeroOculto = Math.floor(Math.random() * 100) + 1;
 let historial = [];
 
+//Funcion para resetear la informacion del usuario
 const resetearJuego = () => {
     numeroOculto = Math.floor(Math.random() * 100) + 1;
     historial = [];
