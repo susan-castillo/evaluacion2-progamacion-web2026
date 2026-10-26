@@ -1,6 +1,6 @@
 // Inventario inicial del restaurante
 let inventario = [
-    { id: 101, nombre: "Menú Ejecutivo (Pollo)", precio: 5.50, stock: 12, categoria: "Fuerte" },
+    { id: 101, nombre: "Menú Ejecutivo", precio: 5.50, stock: 12, categoria: "Fuerte" },
     { id: 102, nombre: "Lasaña de Carne", precio: 6.00, stock: 5, categoria: "Fuerte" },
     { id: 103, nombre: "Ensalada César", precio: 3.50, stock: 8, categoria: "Entrada" },
     { id: 104, nombre: "Sopa del Día", precio: 2.50, stock: 10, categoria: "Entrada" },
