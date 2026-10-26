@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 import {Container, Navbar, NavbarBrand, Spinner, UncontrolledAlert} from "reactstrap";
-import HeaderInfo from "../components/HeaderInfo.jsx";
+import ReservaInfo from "../components/ReservaInfo.jsx";
 import {getReserva} from "../../api/reservaService.js";
 
 function MenuScreen() {
@@ -44,7 +44,7 @@ function MenuScreen() {
             <div style={{border: "1px solid #D4D2D2"}}/>
 
             {/*Informacion de la reserva*/}
-            <HeaderInfo saldo={reserva.saldo} total={reserva.total}/>
+            <ReservaInfo saldo={reserva.saldo} total={reserva.total}/>
 
             {/* Captura y despliegue de mensajes de error de la API */}
             {errorMsg && (<UncontrolledAlert color="danger" className="mt-3">

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Container, Spinner, UncontrolledAlert} from "reactstrap";
-import HeaderInfo from "../components/HeaderInfo.jsx";
+import ReservaInfo from "../components/ReservaInfo.jsx";
 import {getReserva} from "../../api/reservaService.js";
 
 function LuckyNumberScreen(){
