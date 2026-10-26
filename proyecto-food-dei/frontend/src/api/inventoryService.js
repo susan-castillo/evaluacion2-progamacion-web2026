@@ -1,7 +1,7 @@
 const API_BASE_INVENTARIO = "http://localhost:5000/api";
 
-// Solicitud de información del menú al backend
-export const getMenu = async () => {
+// Solicitud de información del inventario al backend
+export const getInventario = async () => {
     const res = await fetch(`${API_BASE_INVENTARIO}/menu`);
     return res.json();
 };
