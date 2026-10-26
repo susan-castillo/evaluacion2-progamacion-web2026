@@ -1,22 +1,26 @@
 import {useEffect, useState} from 'react'
-import {Alert, Container, Navbar, NavbarBrand, Spinner} from "reactstrap";
+import {Alert, Col, Container, Navbar, NavbarBrand, Row, Spinner} from "reactstrap";
 import ReservaInfo from "../components/ReservaInfo.jsx";
 import MenuCatalog from "../components/MenuCatalog.jsx";
-import {agregarAReserva, getMenu, getReserva} from "../../api/inventoryService.js";
+import ReservCart from "../components/ReservCart.jsx";
+import {agregarAReserva, getInventario, getReserva} from "../../api/inventoryService.js";
 
 function MenuScreen() {
-    //Declaración de variables de estado para almacenar el menú, la reserva, mensaje de error y estado de carga
-    const [menu, setMenu] = useState([]);
+    //Declaración de variables de estado para almacenar el inventario, la reserva, mensaje de error y estado de carga
+    const [inventario, setInventario] = useState([]);
     const [reserva, setReserva] = useState({saldo: 0, total: 0, itemsReservados: []});
     const [errorMsg, setErrorMsg] = useState('');
     const [cargando, setCargando] = useState(false);
 
-    // Funcion cargar datos nos sirve para poder hacer la peticion al backend y obtener el menú y la reserva
+    // El saldo actual disminuye conforme se agregan platos a la reserva
+    const saldoActual = Number((reserva.saldo - reserva.total).toFixed(2));
+
+    // Funcion cargar datos nos sirve para poder hacer la peticion al backend y obtener el inventario y la reserva
     const cargarDatos = async () => {
         setCargando(true);
         try {
-            const [dataMenu, dataReserva] = await Promise.all([getMenu(), getReserva()]);
-            setMenu(dataMenu);
+            const [dataInventario, dataReserva] = await Promise.all([getInventario(), getReserva()]);
+            setInventario(dataInventario);
             setReserva(dataReserva);
         } catch (err) {
             setErrorMsg('Error de conexión con el servidor backend');
@@ -61,7 +65,7 @@ function MenuScreen() {
             <div style={{border: "1px solid #D4D2D2"}}/>
 
             {/*Informacion de la reserva*/}
-            <ReservaInfo saldo={reserva.saldo} total={reserva.total}/>
+            <ReservaInfo saldo={saldoActual} total={reserva.total}/>
 
             {/* Captura y despliegue de mensajes de error de la API */}
             <Alert color="danger" className="mt-3" isOpen={!!errorMsg} toggle={() => setErrorMsg('')}>
@@ -74,8 +78,23 @@ function MenuScreen() {
                 <span className="ms-2 text-muted fw-bold">Cargando...</span>
             </div>)}
 
-            {/*Catálogo de platos disponibles*/}
-            <MenuCatalog menu={menu} onAgregar={handleAgregar}/>
+            {/*Catálogo de platos a la izquierda y carrito de la reserva a la derecha*/}
+            <Row>
+                <Col lg="8">
+                    <MenuCatalog
+                        inventario={inventario}
+                        itemsReservados={reserva.itemsReservados}
+                        onAgregar={handleAgregar}
+                    />
+                </Col>
+                <Col lg="4">
+                    <ReservCart
+                        itemsReservados={reserva.itemsReservados}
+                        inventario={inventario}
+                        total={reserva.total}
+                    />
+                </Col>
+            </Row>
         </Container>
     </>)
 }

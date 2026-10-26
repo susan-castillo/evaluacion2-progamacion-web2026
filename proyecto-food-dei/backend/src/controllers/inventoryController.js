@@ -1,10 +1,9 @@
-
 //Importacion de modulos necesarios
 const { inventario, reserva, calcularTotal } = require('../utils/dataInventory');
 
 //----- ENDPOINTS
 // Endpoint 1: GET /api/menu
-const obtenerMenu = (req, res) => {
+const obtenerInventario = (req, res) => {
     res.json(inventario);
 };
 
@@ -33,9 +32,15 @@ const agregarAReserva = (req, res) => {
     const itemExistente = reserva.itemsReservados.find(i => i.id === id);
     const yaReservado = itemExistente ? itemExistente.cantidad : 0;
 
- if (plato.stock < cant) {
-    return res.status(400).json({ error: "Stock insuficiente" });
-}
+    if (plato.stock < yaReservado + cant) {
+        return res.status(400).json({ error: "Stock insuficiente" });
+    }
+
+    // El total de la reserva con este plato no puede superar el saldo (el saldo restante nunca baja de 0)
+    const nuevoTotal = Number((calcularTotal() + plato.precio * cant).toFixed(2));
+    if (nuevoTotal > reserva.saldo) {
+        return res.status(400).json({ error: "Saldo insuficiente" });
+    }
 
     if (itemExistente) {
         itemExistente.cantidad += cant;
@@ -50,7 +55,7 @@ const agregarAReserva = (req, res) => {
 
 // Exportamos nuestras funciones para que puedan ser utilizadas en otros archivos
 module.exports = {
-    obtenerMenu,
+    obtenerInventario,
     obtenerReserva,
     agregarAReserva
 };

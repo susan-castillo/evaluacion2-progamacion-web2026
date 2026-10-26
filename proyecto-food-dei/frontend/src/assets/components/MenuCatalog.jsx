@@ -1,33 +1,39 @@
 import React from 'react';
 import { Badge, Button, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 
-export default function MenuCatalog({ menu, onAgregar }) {
+export default function MenuCatalog({ inventario, itemsReservados = [], onAgregar }) {
     return (
         <Row className="mt-4">
-            {menu.map((plato) => (
-                <Col key={plato.id} md="6" lg="4" className="mb-4">
-                    <Card className="h-100 shadow-sm">
-                        <CardBody className="d-flex flex-column">
-                            <div className="d-flex justify-content-between align-items-start mb-2">
-                                <Badge color="info" pill>{plato.categoria}</Badge>
-                                {plato.stock > 0
-                                    ? <Badge color="success" pill>Stock: {plato.stock}</Badge>
-                                    : <Badge color="danger" pill>Agotado</Badge>}
-                            </div>
-                            <CardTitle tag="h5">{plato.nombre}</CardTitle>
-                            <CardText className="fw-bold fs-5">${plato.precio.toFixed(2)}</CardText>
-                            <Button
-                                color="primary"
-                                className="mt-auto"
-                                disabled={plato.stock === 0}
-                                onClick={() => onAgregar(plato.id, 1)}
-                            >
-                                Agregar
-                            </Button>
-                        </CardBody>
-                    </Card>
-                </Col>
-            ))}
+            {inventario.map((plato) => {
+                // Stock disponible = stock del backend menos lo que ya está en la reserva actual
+                const item = itemsReservados.find(i => i.id === plato.id);
+                const disponible = plato.stock - (item ? item.cantidad : 0);
+
+                return (
+                    <Col key={plato.id} xs="12" md="4">
+                        <Card className="mb-3 shadow-sm">
+                            <CardBody>
+                                <CardTitle tag="h5">{plato.nombre}</CardTitle>
+                                <div className="mb-2">
+                                    <Badge color="info" pill>{plato.categoria}</Badge>
+                                </div>
+                                <div className="mb-2">
+                                    <Badge color="success" className="fs-6">${plato.precio.toFixed(2)}</Badge>
+                                </div>
+                                <CardText>Stock disponible: {disponible}</CardText>
+                                <Button
+                                    color={disponible === 0 ? "secondary" : "primary"}
+                                    className="w-100"
+                                    disabled={disponible === 0}
+                                    onClick={() => onAgregar(plato.id, 1)}
+                                >
+                                    {disponible === 0 ? "Agotado" : "Añadir a la Reserva"}
+                                </Button>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                );
+            })}
         </Row>
     );
 }
