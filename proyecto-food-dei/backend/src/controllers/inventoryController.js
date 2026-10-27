@@ -32,7 +32,9 @@ const agregarAReserva = (req, res) => {
     const itemExistente = reserva.itemsReservados.find(i => i.id === id);
     const yaReservado = itemExistente ? itemExistente.cantidad : 0;
 
-    if (plato.stock < yaReservado + cant) {
+    // Como el stock ya se descuenta al agregar, plato.stock es lo que queda disponible
+    // (por eso ya no hace falta sumar lo que hay en la reserva)
+    if (plato.stock < cant) {
         return res.status(400).json({ error: "Stock insuficiente" });
     }
 
@@ -47,6 +49,10 @@ const agregarAReserva = (req, res) => {
     } else {
         reserva.itemsReservados.push({ id, cantidad: cant });
     }
+    
+    // Se descuenta el stock al agregar a la reserva, para que el DELETE y el PUT
+    // puedan devolver las unidades al stock del menú sin que este se infle
+    plato.stock -= cant;
 
     reserva.total = Number(calcularTotal().toFixed(2));
 
