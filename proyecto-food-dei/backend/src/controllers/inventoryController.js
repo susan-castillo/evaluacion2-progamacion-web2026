@@ -107,10 +107,40 @@ const actualizarPorciones = (req, res) => {
     res.json(reserva);
 };
 
+// Endpoint 5: DELETE /api/reserva/eliminar/:id
+// Quita el plato completo de la reserva y devuelve sus unidades al stock del menú
+const eliminarDeReserva = (req, res) => {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id)) {
+        return res.status(400).json({ error: "Id inválido" });
+    }
+
+    // findIndex devuelve la posición del item en la reserva, o -1 si no existe
+    const indice = reserva.itemsReservados.findIndex(i => i.id === id);
+    if (indice === -1) {
+        return res.status(404).json({ error: "El alimento no está en la reserva" });
+    }
+
+    // splice devuelve un arreglo con lo eliminado; lo desestructuramos para tomar el item
+    const [itemEliminado] = reserva.itemsReservados.splice(indice, 1);
+
+    // Se devuelven al stock las unidades que estaban reservadas
+    const plato = inventario.find(p => p.id === id);
+    if (plato) {
+        plato.stock += itemEliminado.cantidad;
+    }
+
+    reserva.total = Number(calcularTotal().toFixed(2));
+
+    res.json(reserva);
+};
+
 // Exportamos nuestras funciones para que puedan ser utilizadas en otros archivos
 module.exports = {
     obtenerInventario,
     obtenerReserva,
     agregarAReserva,
-    actualizarPorciones
+    actualizarPorciones,
+    eliminarDeReserva
 };
