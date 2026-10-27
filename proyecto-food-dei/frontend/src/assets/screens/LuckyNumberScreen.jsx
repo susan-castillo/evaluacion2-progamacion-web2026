@@ -85,9 +85,10 @@ function LuckyNumberScreen() {
                     <h3 className="mb-0 fw-bold">¡Adivina el Número!</h3>
                 </div>
             </div>
-            <div style={{ border: "1px solid #D4D2D2" }} />
+            <p className={"fw-light text-start"}>Juego interactivo de lógica y prueba de suerte en el que el usuario intenta adivinar un número secreto entre 1 y 100 generado por el servidor, recibiendo pistas dinámicas en tiempo real y un historial detallado de intentos.</p>
+            <div style={{border: "1px solid #D4D2D2"}}/>
         </Container>
-        <Container className="my-4" style={{ maxWidth: '555px' }}>
+        <Container className="my-5" style={{ maxWidth: '555px' }}>
 
             {/* Captura y despliegue de mensajes de error de la API */}
             {errorMsg && (
@@ -97,7 +98,7 @@ function LuckyNumberScreen() {
             )}
 
             {/* Tarjeta principal del juego */}
-            <Card className="shadow-sm border-0 mt-4">
+            <Card className="shadow rounded-5 border-0 mt-4">
                 <CardBody className="p-4">
                     {/* Alerta de resultado (Mayor, Menor o Correcto) */}
                     {mensaje && (

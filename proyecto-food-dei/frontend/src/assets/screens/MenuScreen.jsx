@@ -59,16 +59,17 @@ function MenuScreen() {
                     />
                 </div>
                 <div>
-                    <h2>Food Dei</h2>
+                    <h3 className={"fw-bold"}>Food Dei</h3>
                 </div>
             </div>
+            <p className={"fw-light text-start"}>Módulo de gestión de reservas para Food DEI S.A., diseñado para consultar el menú disponible, seleccionar platillos y registrar pedidos en tiempo real.</p>
             <div style={{border: "1px solid #D4D2D2"}}/>
 
             {/*Informacion de la reserva*/}
             <ReservaInfo saldo={saldoActual} total={reserva.total}/>
 
             {/* Captura y despliegue de mensajes de error de la API */}
-            <UncontrolledAlert color="warning" className="mt-3" isOpen={!!errorMsg} toggle={() => setErrorMsg('')}>
+            <UncontrolledAlert color="danger" className="mt-3" isOpen={!!errorMsg} toggle={() => setErrorMsg('')}>
                 {errorMsg}
             </UncontrolledAlert>
 
