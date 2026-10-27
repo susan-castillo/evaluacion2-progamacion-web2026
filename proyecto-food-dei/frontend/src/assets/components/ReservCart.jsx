@@ -1,7 +1,7 @@
 import React from 'react';
-import { Badge, Button, ButtonGroup, Card, CardBody, CardTitle, ListGroup, ListGroupItem } from 'reactstrap';
+import {Badge, Button, ButtonGroup, Card, CardBody, CardTitle, ListGroup, ListGroupItem} from 'reactstrap';
 
-export default function ReservCart({ itemsReservados = [], inventario = [], total, onActualizar, onEliminar }) {
+export default function ReservCart({itemsReservados = [], inventario = [], total, onActualizar, onEliminar}) {
     return (
         <Card className="shadow-sm mt-4">
             <CardBody>

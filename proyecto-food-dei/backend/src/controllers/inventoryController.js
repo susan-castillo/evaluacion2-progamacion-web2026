@@ -1,5 +1,5 @@
 //Importacion de modulos necesarios
-const { inventario, reserva, calcularTotal } = require('../utils/dataInventory');
+const {inventario, reserva, calcularTotal} = require('../utils/dataInventory');
 
 //----- ENDPOINTS
 // Endpoint 1: GET /api/menu
@@ -15,17 +15,17 @@ const obtenerReserva = (req, res) => {
 // Endpoint 3: POST /api/reserva/agregar
 // Recibe { alimentoId, cantidad } y agrega temporalmente el plato a la reserva
 const agregarAReserva = (req, res) => {
-    const { alimentoId, cantidad } = req.body || {};
+    const {alimentoId, cantidad} = req.body || {};
     const id = Number(alimentoId);
     const cant = Number(cantidad);
 
     if (!Number.isInteger(id) || !Number.isInteger(cant) || cant <= 0) {
-        return res.status(400).json({ error: "Datos inválidos" });
+        return res.status(400).json({error: "Datos inválidos"});
     }
 
     const plato = inventario.find(p => p.id === id);
     if (!plato) {
-        return res.status(404).json({ error: "Alimento no encontrado" });
+        return res.status(404).json({error: "Alimento no encontrado"});
     }
 
     // Se considera lo que ya está en la reserva para no sobrepasar el stock
@@ -35,19 +35,19 @@ const agregarAReserva = (req, res) => {
     // Como el stock ya se descuenta al agregar, plato.stock es lo que queda disponible
     // (por eso ya no hace falta sumar lo que hay en la reserva)
     if (plato.stock < cant) {
-        return res.status(400).json({ error: "Stock insuficiente" });
+        return res.status(400).json({error: "Stock insuficiente"});
     }
 
     // El total de la reserva con este plato no puede superar el saldo (el saldo restante nunca baja de 0)
     const nuevoTotal = Number((calcularTotal() + plato.precio * cant).toFixed(2));
     if (nuevoTotal > reserva.saldo) {
-        return res.status(400).json({ error: "Saldo insuficiente" });
+        return res.status(400).json({error: "Saldo insuficiente"});
     }
 
     if (itemExistente) {
         itemExistente.cantidad += cant;
     } else {
-        reserva.itemsReservados.push({ id, cantidad: cant });
+        reserva.itemsReservados.push({id, cantidad: cant});
     }
 
     // Se descuenta el stock al agregar a la reserva, para que el DELETE y el PUT
@@ -66,14 +66,14 @@ const actualizarPorciones = (req, res) => {
     const nuevaCantidad = Number(req.body?.cantidad);
 
     if (!Number.isInteger(id) || !Number.isInteger(nuevaCantidad) || nuevaCantidad < 0) {
-        return res.status(400).json({ error: "Datos inválidos" });
+        return res.status(400).json({error: "Datos inválidos"});
     }
 
     const plato = inventario.find(p => p.id === id);
     const item = reserva.itemsReservados.find(i => i.id === id);
 
     if (!plato || !item) {
-        return res.status(404).json({ error: "El alimento no está en la reserva" });
+        return res.status(404).json({error: "El alimento no está en la reserva"});
     }
 
     // diferencia > 0: el usuario sube porciones, diferencia < 0: las baja
@@ -81,13 +81,13 @@ const actualizarPorciones = (req, res) => {
 
     // Si sube porciones, debe haber stock suficiente para la diferencia
     if (diferencia > plato.stock) {
-        return res.status(400).json({ error: "Stock insuficiente" });
+        return res.status(400).json({error: "Stock insuficiente"});
     }
 
     // Si sube porciones, el nuevo total no puede superar el saldo
     const nuevoTotal = Number((calcularTotal() + plato.precio * diferencia).toFixed(2));
     if (nuevoTotal > reserva.saldo) {
-        return res.status(400).json({ error: "Saldo insuficiente para esta cantidad" });
+        return res.status(400).json({error: "Saldo insuficiente para esta cantidad"});
     }
 
     // Con todo validado, recién ahora se modifican los datos
@@ -113,13 +113,13 @@ const eliminarDeReserva = (req, res) => {
     const id = Number(req.params.id);
 
     if (!Number.isInteger(id)) {
-        return res.status(400).json({ error: "Id inválido" });
+        return res.status(400).json({error: "Id inválido"});
     }
 
     // findIndex devuelve la posición del item en la reserva, o -1 si no existe
     const indice = reserva.itemsReservados.findIndex(i => i.id === id);
     if (indice === -1) {
-        return res.status(404).json({ error: "El alimento no está en la reserva" });
+        return res.status(404).json({error: "El alimento no está en la reserva"});
     }
 
     // splice devuelve un arreglo con lo eliminado; lo desestructuramos para tomar el item

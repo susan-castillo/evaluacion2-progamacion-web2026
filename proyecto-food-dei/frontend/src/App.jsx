@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useNavigate, useLocation} from 'react-router-dom';
-import {Button, Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink} from 'reactstrap';
+import {Button, Collapse, Container, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink} from 'reactstrap';
 import AppRouter from './assets/routes/AppRouter';
 
 function App() {
@@ -35,8 +35,24 @@ function App() {
                 </Navbar>
 
             )}
+
             {/* Render de las vistas según la URL */}
             <AppRouter/>
+
+            {/*Pie de página*/}
+            <footer className="text-center text-muted mt-5 pt-3 pb-3 bg-secondary-subtle">
+                <Container>
+                    <p className="mb-1 fw-semibold">
+                        Adivina tú numero - Sistema de gestión de reservass
+                    </p>
+                    <p className="mb-1 text-secondary">
+                        Evaluación II &bull; Programación Web &bull; UCA
+                    </p>
+                    <p className="mb-0 text-secondary small">
+                        San Salvador, noviembre 2026
+                    </p>
+                </Container>
+            </footer>
         </div>);
 }
 

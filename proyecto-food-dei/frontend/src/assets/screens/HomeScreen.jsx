@@ -1,6 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Card, CardImg, CardBody, Button } from 'reactstrap';
+import {useNavigate} from 'react-router-dom';
+import {Container, Row, Col, Card, CardImg, CardBody, Button} from 'reactstrap';
 
 function HomeScreen() {
     const navigate = useNavigate();
@@ -13,7 +13,7 @@ function HomeScreen() {
                     <img
                         src="/sitio-web.png"
                         alt="Logo de la evaluación"
-                        style={{ width: "50px", height: "50px" }}
+                        style={{width: "50px", height: "50px"}}
                     />
                     <h3 className="mb-0 fw-bold">Evaluación II - Programación Web</h3>
                 </div>
@@ -67,7 +67,8 @@ function HomeScreen() {
                                 <div>
                                     <h4 className="fw-bold mb-3">Ejercicio 2</h4>
                                     <p className="text-muted">
-                                        Caso de negocio: Sistema de Reserva Food DEI SA. Haz click en el botón para ir al ejercicio.
+                                        Caso de negocio: Sistema de Reserva Food DEI SA. Haz click en el botón para ir
+                                        al ejercicio.
                                     </p>
                                 </div>
                                 <Button
