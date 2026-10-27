@@ -3,7 +3,7 @@ import {UncontrolledAlert, Col, Container, Navbar, NavbarBrand, Row, Spinner} fr
 import ReservaInfo from "../components/ReservaInfo.jsx";
 import MenuCatalog from "../components/MenuCatalog.jsx";
 import ReservCart from "../components/ReservCart.jsx";
-import {agregarAReserva, getInventario, getReserva} from "../../api/inventoryService.js";
+import {actualizarPorciones, agregarAReserva, eliminarDeReserva, getInventario, getReserva} from "../../api/inventoryService.js";
 
 function MenuScreen() {
     //Declaración de variables de estado para almacenar el inventario, la reserva, mensaje de error y estado de carga
@@ -29,12 +29,38 @@ function MenuScreen() {
         }
     };
 
-    // Agrega un plato a la reserva y actualiza el estado con la respuesta del backend
+    // Agrega un plato a la reserva y actualiza reserva e inventario con lo que responde el backend
     const handleAgregar = async (alimentoId, cantidad) => {
         try {
             setErrorMsg('');
             const reservaActualizada = await agregarAReserva(alimentoId, cantidad);
             setReserva(reservaActualizada);
+            // El backend descuenta el stock al agregar, por lo que se vuelve a pedir el inventario
+            setInventario(await getInventario());
+        } catch (err) {
+            setErrorMsg(err.message);
+        }
+    };
+
+    // Cambia la cantidad de porciones de un plato (botones - y + del carrito)
+    const handleActualizar = async (id, nuevaCantidad) => {
+        try {
+            setErrorMsg('');
+            const reservaActualizada = await actualizarPorciones(id, nuevaCantidad);
+            setReserva(reservaActualizada);
+            setInventario(await getInventario());
+        } catch (err) {
+            setErrorMsg(err.message);
+        }
+    };
+
+    // Quita un plato completo de la reserva (botón Quitar del carrito)
+    const handleEliminar = async (id) => {
+        try {
+            setErrorMsg('');
+            const reservaActualizada = await eliminarDeReserva(id);
+            setReserva(reservaActualizada);
+            setInventario(await getInventario());
         } catch (err) {
             setErrorMsg(err.message);
         }
@@ -84,7 +110,6 @@ function MenuScreen() {
                 <Col lg="8">
                     <MenuCatalog
                         inventario={inventario}
-                        itemsReservados={reserva.itemsReservados}
                         onAgregar={handleAgregar}
                     />
                 </Col>
@@ -93,6 +118,8 @@ function MenuScreen() {
                         itemsReservados={reserva.itemsReservados}
                         inventario={inventario}
                         total={reserva.total}
+                        onActualizar={handleActualizar}
+                        onEliminar={handleEliminar}
                     />
                 </Col>
             </Row>
