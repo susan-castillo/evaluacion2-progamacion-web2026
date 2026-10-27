@@ -10,13 +10,12 @@ const IMAGENES = {
     105: '/platos/jugo.jpg'
 };
 
-export default function MenuCatalog({ inventario, itemsReservados = [], onAgregar }) {
+export default function MenuCatalog({ inventario, onAgregar }) {
     return (
         <Row className="mt-4">
             {inventario.map((plato) => {
-                // Stock disponible = stock del backend menos lo que ya está en la reserva actual
-                const item = itemsReservados.find(i => i.id === plato.id);
-                const disponible = plato.stock - (item ? item.cantidad : 0);
+                // El backend ya descuenta el stock al agregar a la reserva, por lo que plato.stock es lo disponible
+                const disponible = plato.stock;
 
                 return (
                     <Col key={plato.id} xs="12" md="4">

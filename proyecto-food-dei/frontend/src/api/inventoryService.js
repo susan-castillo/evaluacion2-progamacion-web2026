@@ -25,3 +25,29 @@ export const agregarAReserva = async (alimentoId, cantidad) => {
     }
     return data;
 };
+
+// Cambia la cantidad de porciones de un plato en la reserva. Si el backend responde con error, lanza una excepción con su mensaje
+export const actualizarPorciones = async (id, cantidad) => {
+    const res = await fetch(`${API_BASE_INVENTARIO}/reserva/actualizar-porciones/${id}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({cantidad})
+    });
+    const data = await res.json();
+    if (!res.ok) {
+        throw new Error(data.error || 'Error al actualizar las porciones');
+    }
+    return data;
+};
+
+// Elimina un plato completo de la reserva. Si el backend responde con error, lanza una excepción con su mensaje
+export const eliminarDeReserva = async (id) => {
+    const res = await fetch(`${API_BASE_INVENTARIO}/reserva/eliminar/${id}`, {
+        method: 'DELETE'
+    });
+    const data = await res.json();
+    if (!res.ok) {
+        throw new Error(data.error || 'Error al eliminar de la reserva');
+    }
+    return data;
+};

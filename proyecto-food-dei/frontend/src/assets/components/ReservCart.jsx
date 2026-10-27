@@ -1,7 +1,7 @@
 import React from 'react';
-import { Badge, Card, CardBody, CardTitle, ListGroup, ListGroupItem } from 'reactstrap';
+import { Badge, Button, ButtonGroup, Card, CardBody, CardTitle, ListGroup, ListGroupItem } from 'reactstrap';
 
-export default function ReservCart({ itemsReservados = [], inventario = [], total }) {
+export default function ReservCart({ itemsReservados = [], inventario = [], total, onActualizar, onEliminar }) {
     return (
         <Card className="shadow-sm mt-4">
             <CardBody>
@@ -14,18 +14,47 @@ export default function ReservCart({ itemsReservados = [], inventario = [], tota
                         {itemsReservados.map((item) => {
                             const plato = inventario.find(p => p.id === item.id);
                             if (!plato) return null;
-
                             return (
-                                <ListGroupItem key={item.id} className="d-flex justify-content-between align-items-center px-0">
-                                    <div>
-                                        <div className="fw-bold">{plato.nombre}</div>
-                                        <small className="text-muted">
-                                            {item.cantidad} × ${plato.precio.toFixed(2)}
-                                        </small>
+                                <ListGroupItem key={item.id}>
+                                    <div className="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div className="fw-bold">{plato.nombre}</div>
+                                            <small className="text-muted">
+                                                {item.cantidad} × ${plato.precio.toFixed(2)}
+                                            </small>
+                                        </div>
+                                        <Badge color="secondary" pill>
+                                            ${(plato.precio * item.cantidad).toFixed(2)}
+                                        </Badge>
                                     </div>
-                                    <Badge color="secondary" pill>
-                                        ${(plato.precio * item.cantidad).toFixed(2)}
-                                    </Badge>
+
+                                    {/* Controles de porciones (PUT) y quitar plato (DELETE) */}
+                                    <div className="d-flex justify-content-between align-items-center mt-2">
+                                        <ButtonGroup size="sm">
+                                            <Button
+                                                outline
+                                                color="secondary"
+                                                onClick={() => onActualizar(item.id, item.cantidad - 1)}
+                                            >
+                                                -
+                                            </Button>
+                                            <Button outline color="secondary" disabled>
+                                                {item.cantidad}
+                                            </Button>
+                                            <Button
+                                                outline
+                                                color="secondary"
+                                                // Si ya no queda stock, no tiene sentido subir más porciones
+                                                disabled={plato.stock === 0}
+                                                onClick={() => onActualizar(item.id, item.cantidad + 1)}
+                                            >
+                                                +
+                                            </Button>
+                                        </ButtonGroup>
+                                        <Button color="danger" outline size="sm" onClick={() => onEliminar(item.id)}>
+                                            Quitar
+                                        </Button>
+                                    </div>
                                 </ListGroupItem>
                             );
                         })}
