@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import {Alert, Col, Container, Navbar, NavbarBrand, Row, Spinner} from "reactstrap";
+import {UncontrolledAlert, Col, Container, Navbar, NavbarBrand, Row, Spinner} from "reactstrap";
 import ReservaInfo from "../components/ReservaInfo.jsx";
 import MenuCatalog from "../components/MenuCatalog.jsx";
 import ReservCart from "../components/ReservCart.jsx";
@@ -68,9 +68,9 @@ function MenuScreen() {
             <ReservaInfo saldo={saldoActual} total={reserva.total}/>
 
             {/* Captura y despliegue de mensajes de error de la API */}
-            <Alert color="danger" className="mt-3" isOpen={!!errorMsg} toggle={() => setErrorMsg('')}>
+            <UncontrolledAlert color="warning" className="mt-3" isOpen={!!errorMsg} toggle={() => setErrorMsg('')}>
                 {errorMsg}
-            </Alert>
+            </UncontrolledAlert>
 
             {/* Si el estado de la variable cargando esta en true entonces mostrara lo siguiente */}
             {cargando && (<div className="text-center my-3">
