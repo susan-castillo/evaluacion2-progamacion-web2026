@@ -49,10 +49,58 @@ const agregarAReserva = (req, res) => {
     } else {
         reserva.itemsReservados.push({ id, cantidad: cant });
     }
-    
+
     // Se descuenta el stock al agregar a la reserva, para que el DELETE y el PUT
     // puedan devolver las unidades al stock del menú sin que este se infle
     plato.stock -= cant;
+
+    reserva.total = Number(calcularTotal().toFixed(2));
+
+    res.json(reserva);
+};
+
+// Endpoint 4: PUT /api/reserva/actualizar-porciones/:id
+// Recibe el id en la URL y { cantidad } (la NUEVA cantidad total) en el body
+const actualizarPorciones = (req, res) => {
+    const id = Number(req.params.id);
+    const nuevaCantidad = Number(req.body?.cantidad);
+
+    if (!Number.isInteger(id) || !Number.isInteger(nuevaCantidad) || nuevaCantidad < 0) {
+        return res.status(400).json({ error: "Datos inválidos" });
+    }
+
+    const plato = inventario.find(p => p.id === id);
+    const item = reserva.itemsReservados.find(i => i.id === id);
+
+    if (!plato || !item) {
+        return res.status(404).json({ error: "El alimento no está en la reserva" });
+    }
+
+    // diferencia > 0: el usuario sube porciones, diferencia < 0: las baja
+    const diferencia = nuevaCantidad - item.cantidad;
+
+    // Si sube porciones, debe haber stock suficiente para la diferencia
+    if (diferencia > plato.stock) {
+        return res.status(400).json({ error: "Stock insuficiente" });
+    }
+
+    // Si sube porciones, el nuevo total no puede superar el saldo
+    const nuevoTotal = Number((calcularTotal() + plato.precio * diferencia).toFixed(2));
+    if (nuevoTotal > reserva.saldo) {
+        return res.status(400).json({ error: "Saldo insuficiente para esta cantidad" });
+    }
+
+    // Con todo validado, recién ahora se modifican los datos
+    // Si sube, el stock baja; si baja, el stock se recupera
+    plato.stock -= diferencia;
+
+    if (nuevaCantidad === 0) {
+        // Si bajó a 0, el plato sale de la reserva
+        const indice = reserva.itemsReservados.findIndex(i => i.id === id);
+        reserva.itemsReservados.splice(indice, 1);
+    } else {
+        item.cantidad = nuevaCantidad;
+    }
 
     reserva.total = Number(calcularTotal().toFixed(2));
 
@@ -63,5 +111,6 @@ const agregarAReserva = (req, res) => {
 module.exports = {
     obtenerInventario,
     obtenerReserva,
-    agregarAReserva
+    agregarAReserva,
+    actualizarPorciones
 };
