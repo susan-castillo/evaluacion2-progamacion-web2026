@@ -10,6 +10,9 @@ function AppRouter() {
             <Route path="/" element={<HomeScreen/>}/>
             <Route path="/ejercicio1" element={<LuckyNumberScreen/>}/>
             <Route path="/ejercicio2" element={<MenuScreen/>}/>
+
+            {/* Nos manda a HomeScreen si la path escrita no existe */}
+            <Route path="*" element={<HomeScreen />} />
         </Routes>
     );
 }

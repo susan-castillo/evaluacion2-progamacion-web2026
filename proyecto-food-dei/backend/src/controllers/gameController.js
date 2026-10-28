@@ -49,7 +49,7 @@ const reset = (req, res) => {
     try {
         dataGame.resetearJuego();
         return res.status(200).json({
-            mensaje: 'Juego reiniciado. Se ha generado un nuevo número oculto.',
+            mensaje: 'Juego reiniciado. ¡Intenta adivinar el nuevo número!',
             historial: []
         });
     } catch (error) {

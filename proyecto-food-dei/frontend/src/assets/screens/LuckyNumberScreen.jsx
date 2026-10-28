@@ -6,23 +6,33 @@ import {
 import {enviarIntento, reiniciarJuego} from "../../api/gameService.js";
 
 function LuckyNumberScreen() {
-    // Declaración de variables de estado (sin estado 'cargando')
+    // Declaración de variables de estado
     const [numero, setNumero] = useState('');
     const [mensaje, setMensaje] = useState('');
     const [tipoAlerta, setTipoAlerta] = useState('info');
+    //Permitira bloquear las acciones del usuario si adivino el numero
     const [gano, setGano] = useState(false);
     const [historial, setHistorial] = useState([]);
+    //Guardara los mensajes de fallos del servidor
     const [errorMsg, setErrorMsg] = useState('');
+    // Boleena para deshabilitar los botones durante las peticiones HTTP
     const [enviando, setEnviando] = useState(false);
 
     // Función para procesar la prueba del número ingresado
+    // hanldeGuess es una función asíncrona que captura el evento del formulario
     const handleGuess = async (e) => {
+        // Evita recargar la pagina web al momento de enviar el formulario
         e.preventDefault();
+
+        //Detiene la ejecucion si el input esta vacio o si hay una petición en curos
         if (!numero || enviando) return;
 
         setEnviando(true);
+        //Limpia los errores previos
         setErrorMsg('');
+
         try {
+            //Envia la peticion al servidor, al endpoint correspondiente
             const data = await enviarIntento(numero);
 
             if (data.resultado === 'correcto') {
@@ -40,9 +50,12 @@ function LuckyNumberScreen() {
                 setTipoAlerta('danger');
             }
 
+            //Si existe un historial retornado del servidor, entonces los actualizamos con el nuevo intento del usuario
             if (data.historial) {
                 setHistorial(data.historial);
             }
+
+            //Limpiamos el input
             setNumero('');
         } catch (err) {
             setErrorMsg('Error de conexión con el servidor backend');
@@ -55,12 +68,16 @@ function LuckyNumberScreen() {
     const handleReset = async () => {
         setEnviando(true);
         setErrorMsg('');
+
         try {
-            await reiniciarJuego();
-            setMensaje('Juego reiniciado. ¡Intenta adivinar el nuevo número!');
+            //Envia la peticion al servidor, al endpoint correspondiente
+            const data = await reiniciarJuego();
+            setMensaje(data.mensaje);
             setTipoAlerta('info');
             setGano(false);
+            //Limpia el historial en pantalla
             setHistorial([]);
+            //Limpia el input
             setNumero('');
         } catch (err) {
             setErrorMsg('Error de conexión con el servidor backend al reiniciar');
@@ -120,10 +137,12 @@ function LuckyNumberScreen() {
                                     type="number"
                                     min="1"
                                     max="100"
+                                    // Enlaza el contenido visual del campo con la variable de estado numero
                                     value={numero}
+                                    // Es un escuchador que se ejecuta cada vez que el usuario presiona una tecla o cambia el valor del input.
                                     onChange={(e) => setNumero(e.target.value)}
                                     disabled={gano || enviando}
-                                    placeholder="Ej. 42"
+                                    placeholder="Adivina el número"
                                     required
                                 />
                             </FormGroup>

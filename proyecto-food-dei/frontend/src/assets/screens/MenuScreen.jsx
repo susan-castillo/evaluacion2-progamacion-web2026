@@ -25,6 +25,7 @@ function MenuScreen() {
 
     // Formato MM:SS para la visualización del reloj
     const minutos = Math.floor(tiempoRestante / 60);
+    //Calcula los segundos sobrantes con el módulo
     const segundos = tiempoRestante % 60;
     const relojFormateado = `${minutos}:${segundos < 10 ? '0' : ''}${segundos}`;
 
@@ -130,10 +131,11 @@ function MenuScreen() {
     useEffect(() => {
         // Si la reserva se confirmó o el tiempo ya expiró, el reloj no debe correr
         if (tiempoExpirado || reservaConfirmada) return;
-
+        //Repite la funcion contenida dentro de setInverval cada 1000 miliseg
         const timer = setInterval(() => {
             setTiempoRestante((prev) => {
                 if (prev <= 1) {
+                    //Cancela y destruye inmediatamente la ejecución periódica del setInterval
                     clearInterval(timer);
                     setTiempoExpirado(true);
                     return 0;
@@ -164,7 +166,7 @@ function MenuScreen() {
                 </div>
             </div>
             <p className={"fw-light text-start"}>Módulo de gestión de reservas para Food DEI S.A., diseñado para
-                consultar el menú disponible, seleccionar platillos y registrar pedidos en tiempo real.</p>
+                consultar el menú disponible, seleccionar platillos y hacer tu reserva.</p>
             <div style={{border: "1px solid #D4D2D2"}}/>
 
             {/* Alerta cuando el tiempo expira */}
