@@ -5,10 +5,15 @@ const dataGame = require('../utils/dataGame');
 // POST /guess (Evalúa el número recibido)
 const guess = (req, res) => {
     try {
+        //Evaluamos que el numero que venga si sea de tipo number
         const {numero} = req.body;
-        const numIngresado = parseInt(numero, 10);
+        const numIngresado = typeof numero === 'number'
+            ? numero
+            : typeof numero === 'string' && /^\d+$/.test(numero.trim())
+                ? Number(numero)
+                : NaN;
 
-        if (isNaN(numIngresado) || numIngresado < 1 || numIngresado > 100) {
+        if (!Number.isInteger(numIngresado) || numIngresado < 1 || numIngresado > 100) {
             return res.status(400).json({
                 mensaje: 'Por favor, ingresa un número válido entre 1 y 100'
             });
