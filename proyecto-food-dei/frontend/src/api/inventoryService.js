@@ -1,4 +1,4 @@
-const API_BASE_INVENTARIO = "http://localhost:5000/api/reserva";
+const API_BASE_INVENTARIO = "http://localhost:5000/api";
 
 // Solicitud de información del inventario al backend
 export const getInventario = async () => {
